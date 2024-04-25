@@ -56,7 +56,7 @@ object Entry extends App {
 }
 ```
 
-# 1.1 Do one thing
+## 1.1 Do one thing
 
 The function `extract_column()` initially perform more than 1 responsibility. Therefore, it is broken down into ssmaller functions, each with its own responsible.
 
@@ -65,3 +65,45 @@ At first, removing header function is a function named `remove_header()` but it 
 The same true for 
 
 - `convert_to_float()` -> `convert_to()` : A float converter function is change to generic converter, instead of fixing the float parser in the function, we can provide any arbitrary converter as a function argument.
+
+# Functional Concept
+
+1. Higher Order Function
+
+   - Treat function as regular object
+   - Can pass function as argument, and return function (not execute yet) to result.
+
+2. Currying
+   - `f(x, y) = f(x)(y)` -> `def extract_column(column_index)(data):`
+   ```python
+    def plus(a):
+      def add(b):
+          return a + b
+      return add
+   ```
+   - A tool for changing n-ary function to unary function.
+   - By partially apply the parameter to the function, then return the function within the called function that expects another parameter.
+   - as the above example, The whole function can be called `addition` function with 2 parameters.
+     - The first function `plus(a)` expects 1 param, after called it with param = 3, it will return a function `add(b)` that expects another param. A
+     - When call this function again with param = 5, the `add(5)` will return 8, from the 5+3.
+
+3. Function Composition
+
+   - In short; An method that combine >=2 functions, is such way that an output of one function becomes the input of anohter function and so on.
+   - Traditional function composition: `multiply(add(5))`
+     - Hard to read. Will be very complex when chain to many function.
+   - Modern function composition: 
+    ```python
+      def composite_function(f, g): 
+          return lambda x : f(g(x)) 
+        
+      def add(x): 
+          return x + 2
+        
+      def multiply(x): 
+          return x * 2
+        
+      add_multiply = composite_function(multiply, add) 
+      add_multiply(5) 
+    ```
+      - More examples -> https://www.geeksforgeeks.org/function-composition-in-python/ 
