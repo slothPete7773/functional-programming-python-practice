@@ -66,7 +66,7 @@ The same true for
 
 - `convert_to_float()` -> `convert_to()` : A float converter function is change to generic converter, instead of fixing the float parser in the function, we can provide any arbitrary converter as a function argument.
 
-# Functional Concept
+# Functional Essential Concept
 
 1. Higher Order Function
 
