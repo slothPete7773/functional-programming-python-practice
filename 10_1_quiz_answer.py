@@ -7,11 +7,15 @@ from pymonad.either import Left, Right
 
 # Function to handle file reading
 def read_csv_file(file_path):
-    with open(file_path, "r") as csvfile:
-        reader = csv.reader(csvfile)
-        data = [row for row in reader]
-        return data
-    return IO(read_file)
+    if os.path.isfile(file_path):
+        with open(file_path, "r") as csvfile:
+            reader = csv.reader(csvfile)
+            data = [row for row in reader]
+            return Right(data)
+
+    else:
+        return Left("Error: File not found")
+    # return IO(read_file)
 
 
 def remove_header(data):
@@ -46,9 +50,8 @@ def calculate_average(column_values):
 
 
 # Data pipeline using the Either monad and custom sequencing operator
-csv_file_path = "1example.csv"
+csv_file_path = "example.csv"
 
-# data =  read_csv_file(csv_file_path)
 
 names = read_csv_file(csv_file_path).then(remove_header).then(extract_name_column)
 
