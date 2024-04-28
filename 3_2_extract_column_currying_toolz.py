@@ -1,4 +1,5 @@
 import csv
+from toolz import curry
 
 
 # Function to handle file reading
@@ -13,37 +14,31 @@ def read_csv_file(file_path):
         return None
 
 
-def extract_column_currying_std_python(column_index):
-    def curried(data):
-        try:
-            score_column_values = [row[column_index] for row in data]
-            return score_column_values
-        except (ValueError, IndexError):
-            return None
-
-    return curried
+@curry
+def extract_column_currying_std_python(column_index, data):
+    try:
+        score_column_values = [row[column_index] for row in data]
+        return score_column_values
+    except (ValueError, IndexError):
+        return None
 
 
-def offset_data_from_row(row_index: int):
-    def curried(data):
-        try:
-            return data[row_index:]
-        except IndexError as e:
-            return None
-
-    return curried
+@curry
+def offset_data_from_row(row_index: int, data):
+    try:
+        return data[row_index:]
+    except IndexError as e:
+        return None
 
 
-def convert_to(converter):
-    def curried(data):
-        try:
-            converted_values = [converter(row) for row in data]
-            return converted_values
-        except Exception as e:
-            print(e)
-            return None
-
-    return curried
+@curry
+def convert_to(converter, data):
+    try:
+        converted_values = [converter(row) for row in data]
+        return converted_values
+    except Exception as e:
+        print(e)
+        return None
 
 
 # Function to calculate average
