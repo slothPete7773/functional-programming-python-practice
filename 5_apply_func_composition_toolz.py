@@ -1,5 +1,5 @@
 import csv
-from toolz import curry
+from toolz import curry, pipe
 
 
 # Function to handle file reading
@@ -15,7 +15,7 @@ def read_csv_file(file_path):
 
 
 @curry
-def extract_column_currying_std_python(column_index, data):
+def extract_column_currying(column_index, data):
     try:
         score_column_values = [row[column_index] for row in data]
         return score_column_values
@@ -55,25 +55,20 @@ def calculate_average(column_values):
 # Data pipeline
 csv_file_path = "example.csv"
 column_index = 1  # Assuming the second column (index 1) needs to be processed
+content_row_index_offset = 1
 
-# Step 1: Read CSV file
-data = read_csv_file(csv_file_path)
+extract_column = extract_column_currying(column_index)
+offsetting_data = offset_data_from_row(1)
+convert_to_float = convert_to(float)
 
-if data == None:
-    print("Error reading CSV file")
-else:
-    # Step 2: Extract column
-    to_extract_column_from = extract_column_currying_std_python(column_index)(data=data)
-    score_column_values = offset_data_from_row(1)(to_extract_column_from)
-    float_score_values = convert_to(float)(score_column_values)
+avg_result = pipe(
+    read_csv_file(csv_file_path),
+    extract_column,
+    offsetting_data,
+    convert_to_float,
+    calculate_average,
+)
 
-    if float_score_values == None:
-        print("Error extracting column")
-    else:
-        # Step 3: Calculate average
-        result = calculate_average(float_score_values)
-
-        if result == None:
-            print("Error calculating average")
-        else:
-            print(f"The average is: {result}")
+if avg_result is None:
+    print("Error calculating average")
+print(f"The average is: {avg_result}")
